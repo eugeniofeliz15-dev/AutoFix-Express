@@ -5,7 +5,7 @@
 
 generator client {
   provider = "prisma-client"
-  output   = "../generated/prisma"
+  output   = "../src/generated/prisma"
 }
 
 datasource db {
@@ -29,7 +29,7 @@ model Usario {
   nombre    String
   email     String  @unique
   password  String  @map("password_hash")
-  role      Role @default (RECEPCIONISTA)
+  rol      Role @default (RECEPCIONISTA)
   ordenes   Orden[] @relation("UsuarioOrdenes")
   mecanicoOrdenes Orden[] @relation("MecanicoOrdenes")
   creadoEn   DateTime @default(now())
@@ -58,14 +58,14 @@ model Orden {
   @@map("ordenes")
 }
 model Cliente {
-  id       Int    @id @default(autoincrement())
+  id       Int      @id @default(autoincrement())
   nombre   String
-  telefono String
-  email    String @unique
+  telefono String?
+  email    String?  @unique
 
   vehiculos Vehiculo[]
 
-  creadoEn DateTime @default(now())
+  creadoAt DateTime @default(now())
 
   @@map("clientes")
 }
@@ -77,11 +77,11 @@ model Vehiculo {
   modelo String
 
   clienteId Int
-  cliente   Cliente @relation(fields: [clienteId], references: [id])
+  cliente   Cliente @relation(fields: [clienteId], references: [id], onDelete: Restrict)
 
   ordenes Orden[]
 
-  creadoEn DateTime @default(now())
+  creadoAt DateTime @default(now())
 
   @@map("vehiculos")
 }

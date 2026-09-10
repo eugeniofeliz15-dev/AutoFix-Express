@@ -8,29 +8,39 @@ import {
   removeVehiculo,
 } from "../controllers/vehiculo.controller.js";
 import { verifyToken, checkRole } from "../middlewares/auth.middleware.js";
-import { Role } from "../generated/prisma/client.js";
+import {
+  VehiculoSchema,
+  VehiculoUpdateSchema,
+} from "../schemas/vehiculo.schema.js";
+import { validate } from "../middlewares/validate.middleware.js";
 
 const router = Router();
 
 router.use(verifyToken);
 
-router.get(
-  "/",
-  checkRole(Role.RECEPCIONISTA, Role.MECANICO, Role.DUENO),
-  getVehiculos,
-);
+router.get("/", checkRole("RECEPCIONISTA", "MECANICO", "DUENO"), getVehiculos);
 router.get(
   "/placa/:placa",
-  checkRole(Role.RECEPCIONISTA, Role.MECANICO, Role.DUENO),
+  checkRole("RECEPCIONISTA", "MECANICO", "DUENO"),
   getVehiculoPorPlaca,
 );
 router.get(
   "/:id",
-  checkRole(Role.RECEPCIONISTA, Role.MECANICO, Role.DUENO),
+  checkRole("RECEPCIONISTA", "MECANICO", "DUENO"),
   getVehiculo,
 );
-router.post("/", checkRole(Role.RECEPCIONISTA, Role.DUENO), postVehiculo);
-router.put("/:id", checkRole(Role.RECEPCIONISTA, Role.DUENO), putVehiculo);
-router.delete("/:id", checkRole(Role.DUENO), removeVehiculo);
+router.post(
+  "/",
+  checkRole("RECEPCIONISTA", "DUENO"),
+  validate(VehiculoSchema),
+  postVehiculo,
+);
+router.put(
+  "/:id",
+  checkRole("RECEPCIONISTA", "DUENO"),
+  validate(VehiculoUpdateSchema),
+  putVehiculo,
+);
+router.delete("/:id", checkRole("DUENO"), removeVehiculo);
 
 export default router;

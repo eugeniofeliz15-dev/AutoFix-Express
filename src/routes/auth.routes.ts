@@ -5,16 +5,17 @@ import {
   getMecanicos,
 } from "../controllers/auth.controller.js";
 import { verifyToken, checkRole } from "../middlewares/auth.middleware.js";
-import { Role } from "../generated/prisma/client.js";
+import { RegisterSchema, LoginSchema } from "../schemas/auth.schema.js";
+import { validate } from "../middlewares/validate.middleware.js";
 
 const router = Router();
 
-router.post("/register", register);
-router.post("/login", login);
+router.post("/register", validate(RegisterSchema), register);
+router.post("/login", validate(LoginSchema), login);
 router.get(
   "/mecanicos",
   verifyToken,
-  checkRole(Role.RECEPCIONISTA, Role.DUENO),
+  checkRole("RECEPCIONISTA", "DUENO"),
   getMecanicos,
 );
 

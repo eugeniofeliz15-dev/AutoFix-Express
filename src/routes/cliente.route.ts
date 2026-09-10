@@ -7,16 +7,30 @@ import {
   removeCliente,
 } from "../controllers/cliente.controller.js";
 import { verifyToken, checkRole } from "../middlewares/auth.middleware.js";
-import { Role } from "../generated/prisma/client.js";
+import {
+  ClienteSchema,
+  ClienteUpdateSchema,
+} from "../schemas/cliente.schema.js";
+import { validate } from "../middlewares/validate.middleware.js";
 
 const router = Router();
 
 router.use(verifyToken);
 
-router.get("/", checkRole(Role.RECEPCIONISTA, Role.DUENO), getClientes);
-router.get("/:id", checkRole(Role.RECEPCIONISTA, Role.DUENO), getCliente);
-router.post("/", checkRole(Role.RECEPCIONISTA, Role.DUENO), postCliente);
-router.put("/:id", checkRole(Role.RECEPCIONISTA, Role.DUENO), putCliente);
-router.delete("/:id", checkRole(Role.DUENO), removeCliente);
+router.get("/", checkRole("RECEPCIONISTA", "DUENO"), getClientes);
+router.get("/:id", checkRole("RECEPCIONISTA", "DUENO"), getCliente);
+router.post(
+  "/",
+  checkRole("RECEPCIONISTA", "DUENO"),
+  validate(ClienteSchema),
+  postCliente,
+);
+router.put(
+  "/:id",
+  checkRole("RECEPCIONISTA", "DUENO"),
+  validate(ClienteUpdateSchema),
+  putCliente,
+);
+router.delete("/:id", checkRole("DUENO"), removeCliente);
 
 export default router;

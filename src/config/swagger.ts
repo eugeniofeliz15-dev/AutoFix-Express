@@ -1,7 +1,6 @@
 import swaggerJSDoc from "swagger-jsdoc";
 import swaggerUi from "swagger-ui-express";
 import { Express } from "express";
-import { Role } from "../generated/prisma/enums.js";
 
 const options: swaggerJSDoc.Options = {
   definition: {
@@ -84,7 +83,6 @@ const options: swaggerJSDoc.Options = {
       },
     },
   },
-  // Lee los comentarios JSDoc directamente de tus controladores
   apis: ["./src/controllers/*.ts"],
 };
 

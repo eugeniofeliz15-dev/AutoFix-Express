@@ -1,0 +1,108 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+}
+
+enum Role {
+  MECANICO
+  RECEPCIONISTA
+  DUENO
+}
+
+enum EstadoOrden {
+  PENDIENTE
+  EN_PROCESO
+  TERMINADO
+}
+
+model Usuarios {
+  id            Int       @id @default(autoincrement())
+  nombre        String
+  email         String    @unique
+  password_hash String
+  role          Role      @default(RECEPCIONISTA)
+  creadoEn      DateTime  @default(now())
+  
+  ordenesCreadas    ordenes[] @relation("OrdenCreadaPorUsuario")
+  ordenesAsignadas  ordenes[] @relation("OrdenAsignadaAMecanico")
+
+  @@map("Usuarios")
+}
+
+model ordenes {
+  id             Int           @id @default(autoincrement())
+  descripcion    String
+  estado         EstadoOrden   @default(PENDIENTE)
+  valorManoObra  Float         @default(0)
+  creadoEn       DateTime      @default(now())
+  
+  usuarioId   Int
+  usuario     Usuarios  @relation("OrdenCreadaPorUsuario", fields: [usuarioId], references: [id])
+  
+  mecanicoId  Int?
+  mecanico    Usuarios? @relation("OrdenAsignadaAMecanico", fields: [mecanicoId], references: [id])
+  
+  vehiculoId  Int
+  vehiculo    vehiculos @relation(fields: [vehiculoId], references: [id])
+  
+  detalleRepuestos detalle_repuestos_orden[]
+
+  @@map("ordenes")
+}
+
+model clientes {
+  id        Int        @id @default(autoincrement())
+  nombre    String
+  telefono  String
+  email     String     @unique
+  creadoEn  DateTime   @default(now())
+  
+  vehiculos vehiculos[]
+
+  @@map("clientes")
+}
+
+model vehiculos {
+  id        Int        @id @default(autoincrement())
+  placa     String     @unique
+  marca     String
+  modelo    String
+  creadoEn  DateTime   @default(now())
+  
+  clienteId Int
+  cliente   clientes  @relation(fields: [clienteId], references: [id])
+  
+  ordenes   ordenes[]
+
+  @@map("vehiculos")
+}
+
+model repuestos {
+  id            Int                     @id @default(autoincrement())
+  nombre        String
+  precio        Float
+  stock         Int                     @default(0)
+  creadoEn      DateTime                @default(now())
+  
+  detalleRepuestos detalle_repuestos_orden[]
+
+  @@map("repuestos")
+}
+
+model detalle_repuestos_orden {
+  id             Int        @id @default(autoincrement())
+  cantidad       Int
+  precioUnitario Float
+  creadoEn       DateTime   @default(now())
+  
+  ordenId    Int
+  orden      ordenes   @relation(fields: [ordenId], references: [id])
+  
+  repuestoId Int
+  repuesto   repuestos @relation(fields: [repuestoId], references: [id])
+
+  @@map("detalle_repuestos_orden")
+}

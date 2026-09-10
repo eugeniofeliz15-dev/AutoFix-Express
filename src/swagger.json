@@ -1,0 +1,178 @@
+{
+  "openapi": "3.0.0",
+  "info": {
+    "title": "AutoFix-Express API",
+    "description": "API para el sistema de gestión del taller mecánico AutoFix Express",
+    "version": "1.0.0"
+  },
+  "servers": [
+    {
+      "url": "http://localhost:3000",
+      "description": "Servidor de desarrollo"
+    }
+  ],
+  "tags": [
+    {
+      "name": "Usuarios",
+      "description": "Endpoints para gestión de usuarios"
+    }
+  ],
+  "paths": {
+    "/api/users/register": {
+      "post": {
+        "tags": ["Usuarios"],
+        "summary": "Registrar un nuevo usuario",
+        "description": "Crea un nuevo usuario en el sistema",
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "required": ["nombre", "email", "password"],
+                "properties": {
+                  "nombre": {
+                    "type": "string",
+                    "example": "Juan Pérez"
+                  },
+                  "email": {
+                    "type": "string",
+                    "format": "email",
+                    "example": "juan@autofix.com"
+                  },
+                  "password": {
+                    "type": "string",
+                    "minLength": 6,
+                    "example": "123456"
+                  },
+                  "role": {
+                    "type": "string",
+                    "enum": ["MECANICO", "RECEPCIONISTA", "DUENO"],
+                    "default": "RECEPCIONISTA",
+                    "example": "RECEPCIONISTA"
+                  }
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "201": {
+            "description": "Usuario registrado exitosamente",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "message": {
+                      "type": "string",
+                      "example": "Usuario registrado exitosamente"
+                    },
+                    "user": {
+                      "type": "object",
+                      "properties": {
+                        "id": { "type": "integer", "example": 1 },
+                        "nombre": { "type": "string", "example": "Juan Pérez" },
+                        "email": { "type": "string", "example": "juan@autofix.com" },
+                        "role": { "type": "string", "example": "RECEPCIONISTA" },
+                        "creadoEn": { "type": "string", "format": "date-time" }
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Error de validación o usuario ya existe"
+          }
+        }
+      }
+    },
+    "/api/users/login": {
+      "post": {
+        "tags": ["Usuarios"],
+        "summary": "Iniciar sesión",
+        "description": "Autentica un usuario y devuelve un token JWT",
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "required": ["email", "password"],
+                "properties": {
+                  "email": {
+                    "type": "string",
+                    "format": "email",
+                    "example": "juan@autofix.com"
+                  },
+                  "password": {
+                    "type": "string",
+                    "example": "123456"
+                  }
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Login exitoso",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "message": {
+                      "type": "string",
+                      "example": "Login exitoso"
+                    },
+                    "user": {
+                      "type": "object",
+                      "properties": {
+                        "id": { "type": "integer", "example": 1 },
+                        "nombre": { "type": "string", "example": "Juan Pérez" },
+                        "email": { "type": "string", "example": "juan@autofix.com" },
+                        "role": { "type": "string", "example": "RECEPCIONISTA" }
+                      }
+                    },
+                    "token": {
+                      "type": "string",
+                      "example": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9..."
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Credenciales inválidas"
+          }
+        }
+      }
+    },
+    "/": {
+      "get": {
+        "tags": ["General"],
+        "summary": "Mensaje de bienvenida",
+        "responses": {
+          "200": {
+            "description": "API funcionando"
+          }
+        }
+      }
+    },
+    "/api/health": {
+      "get": {
+        "tags": ["General"],
+        "summary": "Verificar conexión a la base de datos",
+        "responses": {
+          "200": {
+            "description": "Conexión exitosa"
+          }
+        }
+      }
+    }
+  }
+}

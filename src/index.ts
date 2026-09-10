@@ -5,6 +5,7 @@ import dotenv from "dotenv";
 import authRoutes from "./routes/auth.routes.js";
 import clienteRoutes from "./routes/cliente.route.js";
 import vehiculoRoutes from "./routes/vehiculo.route.js";
+import detalleRepuestoOrdenRoutes from "./routes/detalleRepuestoOrden.route.js";
 import { setupSwagger } from "./config/swagger.js";
 import express from 'express';
 import cors from 'cors';
@@ -27,7 +28,7 @@ app.use(express.json());
 app.use("/api/auth", authRoutes);
 app.use("/api/clientes", clienteRoutes);
 app.use("/api/vehiculos", vehiculoRoutes);
-
+app.use("/api/detalles-repuestos-orden", detalleRepuestoOrdenRoutes);
 const PORT = process.env.PORT || 3000;
 app.listen(PORT, () => {
   console.log(`AutoFix Express API lista en http://localhost:${PORT}`);

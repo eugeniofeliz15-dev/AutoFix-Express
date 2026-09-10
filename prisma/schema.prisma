@@ -1,11 +1,5 @@
-// This is your Prisma schema file,
-// learn more about it in the docs: https://pris.ly/d/prisma-schema
-
-// Get a free hosted Postgres database in seconds: `npx create-db`
-
 generator client {
-  provider = "prisma-client"
-  output   = "../generated/prisma"
+  provider = "prisma-client-js"
 }
 
 datasource db {
@@ -24,92 +18,91 @@ enum EstadoOrden {
   TERMINADO
 }
 
-model Usario {
-  id        Int      @id @default(autoincrement())
-  nombre    String
-  email     String  @unique
-  password  String  @map("password_hash")
-  role      Role @default (RECEPCIONISTA)
-  ordenes   Orden[] @relation("UsuarioOrdenes")
-  mecanicoOrdenes Orden[] @relation("MecanicoOrdenes")
-  creadoEn   DateTime @default(now())
+model Usuarios {
+  id            Int       @id @default(autoincrement())
+  nombre        String
+  email         String    @unique
+  password_hash String
+  role          Role      @default(RECEPCIONISTA)
+  creadoEn      DateTime  @default(now())
+  
+  ordenesCreadas    ordenes[] @relation("OrdenCreadaPorUsuario")
+  ordenesAsignadas  ordenes[] @relation("OrdenAsignadaAMecanico")
 
   @@map("Usuarios")
 }
 
-model Orden {
-  id          Int         @id @default(autoincrement())
-  descripcion String
-  estado      EstadoOrden @default(PENDIENTE)
-  valorMaoObra Float @default(0)
-
-  usuarioId Int
-  usuario   Usario @relation("UsuarioOrdenes", fields: [usuarioId],references: [id])
-
-  mecanicoId Int?
-  mecanico   Usario? @relation("MecanicoOrdenes", fields: [mecanicoId], references: [id])
-
-  vehiculoId Int
-  vehiculo   Vehiculo @relation(fields: [vehiculoId], references: [id])
-
-  detallesRepuestos DetalleRepuestoOrden[]
-  creadoEn DateTime @default(now())
+model ordenes {
+  id             Int           @id @default(autoincrement())
+  descripcion    String
+  estado         EstadoOrden   @default(PENDIENTE)
+  valorManoObra  Float         @default(0)
+  creadoEn       DateTime      @default(now())
+  
+  usuarioId   Int
+  usuario     Usuarios  @relation("OrdenCreadaPorUsuario", fields: [usuarioId], references: [id])
+  
+  mecanicoId  Int?
+  mecanico    Usuarios? @relation("OrdenAsignadaAMecanico", fields: [mecanicoId], references: [id])
+  
+  vehiculoId  Int
+  vehiculo    vehiculos @relation(fields: [vehiculoId], references: [id])
+  
+  detalleRepuestos detalle_repuestos_orden[]
 
   @@map("ordenes")
 }
-model Cliente {
-  id       Int    @id @default(autoincrement())
-  nombre   String
-  telefono String
-  email    String @unique
 
-  vehiculos Vehiculo[]
-
-  creadoEn DateTime @default(now())
+model clientes {
+  id        Int        @id @default(autoincrement())
+  nombre    String
+  telefono  String
+  email     String     @unique
+  creadoEn  DateTime   @default(now())
+  
+  vehiculos vehiculos[]
 
   @@map("clientes")
 }
-model Vehiculo {
-  id Int @id @default(autoincrement())
 
-  placa  String @unique
-  marca  String
-  modelo String
-
+model vehiculos {
+  id        Int        @id @default(autoincrement())
+  placa     String     @unique
+  marca     String
+  modelo    String
+  creadoEn  DateTime   @default(now())
+  
   clienteId Int
-  cliente   Cliente @relation(fields: [clienteId], references: [id])
-
-  ordenes Orden[]
-
-  creadoEn DateTime @default(now())
+  cliente   clientes  @relation(fields: [clienteId], references: [id])
+  
+  ordenes   ordenes[]
 
   @@map("vehiculos")
 }
-model Repuesto {
-  id       Int     @id @default(autoincrement())
-  nombre   String
-  precio   Float
-  stock    Int     @default(0)
 
-  detalles DetalleRepuestoOrden[]
-
-  creadoEn DateTime @default(now())
+model repuestos {
+  id            Int                     @id @default(autoincrement())
+  nombre        String
+  precio        Float
+  stock         Int                     @default(0)
+  creadoEn      DateTime                @default(now())
+  
+  detalleRepuestos detalle_repuestos_orden[]
 
   @@map("repuestos")
 }
-model DetalleRepuestoOrden {
-  id Int @id @default(autoincrement())
 
-  ordenId Int
-  orden  Orden @relation(fields: [ordenId], references: [id])
-
-  repuestoId Int
-  repuesto   Repuesto @relation(fields: [repuestoId], references: [id])
-
-  cantidad     Int
+model detalle_repuestos_orden {
+  id             Int        @id @default(autoincrement())
+  cantidad       Int
   precioUnitario Float
-
-  creadoEn DateTime @default(now())
+  creadoEn       DateTime   @default(now())
+  
+  ordenId    Int
+  orden      ordenes   @relation(fields: [ordenId], references: [id])
+  
+  repuestoId Int
+  repuesto   repuestos @relation(fields: [repuestoId], references: [id])
 
   @@map("detalle_repuestos_orden")
 }

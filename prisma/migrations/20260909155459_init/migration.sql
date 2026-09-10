@@ -21,7 +21,7 @@ CREATE TABLE "ordenes" (
     "id" SERIAL NOT NULL,
     "descripcion" TEXT NOT NULL,
     "estado" "EstadoOrden" NOT NULL DEFAULT 'PENDIENTE',
-    "valorMaoObra" DOUBLE PRECISION NOT NULL DEFAULT 0,
+    "valorManoObra" DOUBLE PRECISION NOT NULL DEFAULT 0,
     "usuarioId" INTEGER NOT NULL,
     "mecanicoId" INTEGER,
     "vehiculoId" INTEGER NOT NULL,

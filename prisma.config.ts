@@ -1,8 +1,9 @@
-import { defineConfig } from '@prisma/config';
+import "dotenv/config";
+import { defineConfig, env } from "@prisma/config";
 
 export default defineConfig({
-  schema: './prisma/schema.prisma',
+  schema: "./prisma/schema.prisma",
   datasource: {
-    url: "postgresql://postgres:Yaritza15%2A@localhost:5432/autofix_express?schema=public",
+    url: env("DATABASE_URL"),
   },
 });

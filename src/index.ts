@@ -5,6 +5,7 @@ import swaggerUi from 'swagger-ui-express';
 import swaggerFile from './swagger.json' with { type: 'json' };
 import { prisma } from './lib/prisma.js';
 import userRoutes from './routes/userRoutes.js';
+import repuestoRoutes from './routes/repuestoRoutes.js';
 
 dotenv.config();
 
@@ -33,6 +34,7 @@ app.get('/api/health', async (req, res) => {
 });
 
 app.use('/api/users', userRoutes);
+app.use('/api/repuestos', repuestoRoutes);
 
 app.listen(PORT, () => {
   console.log(`🚀 Servidor corriendo en http://localhost:${PORT}`);

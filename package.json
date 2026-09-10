@@ -6,12 +6,13 @@
   "type": "module",
   "scripts": {
     "dev": "tsx watch src/index.ts",
-    "swagger": "tsx src/swagger.ts",
+    "swagger": "tsx src/config/swagger.ts",
     "build": "tsc",
     "start": "node dist/index.js",
     "prisma:generate": "prisma generate",
     "prisma:migrate": "prisma migrate dev",
-    "prisma:studio": "prisma studio"
+    "prisma:studio": "prisma studio",
+    "postinstall": "prisma skills sync || exit 0"
   },
   "dependencies": {
     "@prisma/adapter-pg": "^7.10.0",
@@ -22,6 +23,7 @@
     "express": "^5.2.1",
     "jsonwebtoken": "^9.0.3",
     "pg": "^8.23.0",
+    "swagger-jsdoc": "^6.3.0",
     "swagger-ui-express": "^5.0.1",
     "zod": "^4.5.4"
   },
@@ -30,11 +32,17 @@
     "@types/cors": "^2.8.19",
     "@types/express": "^5.0.6",
     "@types/jsonwebtoken": "^9.0.10",
+    "@types/node": "^26.5.1",
+    "@types/pg": "^8.23.1",
+    "@types/swagger-jsdoc": "^6.0.4",
+    "@types/swagger-ui-express": "^4.1.8",
+    "nodemon": "^3.1.14",
     "@types/node": "^26.5.0",
     "@types/pg": "^8.23.1",
     "@types/swagger-ui-express": "^4.1.8",
     "prisma": "^7.10.0",
     "swagger-autogen": "^2.23.7",
+    "ts-node": "^10.9.2",
     "tsx": "^4.23.13",
     "typescript": "^7.0.2"
   }

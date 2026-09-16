@@ -7,9 +7,6 @@ import clienteRoutes from "./routes/cliente.route.js";
 import vehiculoRoutes from "./routes/vehiculo.route.js";
 import detalleRepuestoOrdenRoutes from "./routes/detalleRepuestoOrden.route.js";
 import { setupSwagger } from "./config/swagger.js";
-import express from 'express';
-import cors from 'cors';
-import dotenv from 'dotenv';
 import swaggerUi from 'swagger-ui-express';
 import swaggerFile from './swagger.json' with { type: 'json' };
 import { prisma } from './lib/prisma.js';
@@ -19,7 +16,6 @@ dotenv.config();
 
 const app = express();
 setupSwagger(app);
-const PORT = process.env.PORT || 3000;
 
 app.use(cors());
 app.use(express.json());
